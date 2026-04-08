@@ -64,6 +64,15 @@ SENSOR_DESCRIPTIONS: Final[tuple[E3DCBinarySensorEntityDescription, ...]] = (
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    E3DCBinarySensorEntityDescription(
+        key="emergencypower-active",
+        translation_key="emergencypower-active",
+        device_class=BinarySensorDeviceClass.RUNNING,
+        on_icon="mdi:generator-stationary",
+        off_icon="mdi:generator-stationary-outline",
+        entity_registry_enabled_default=False,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 )
 
 
