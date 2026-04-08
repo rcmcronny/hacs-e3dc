@@ -151,7 +151,7 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return
 
         for wallbox_index in range(0, MAX_WALLBOXES_POSSIBLE - 1):
-            try:
+            try:ready
                 request_data: dict[str, Any] = await self.hass.async_add_executor_job(
                     self.proxy.get_wallbox_identification_data, wallbox_index
                 )
@@ -248,6 +248,11 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Return if SG Ready information is available."""
         return self._sgready_available
 
+    @property
+    def emergencypower_available(self) -> bool:
+        """Return if Emergency Power information is available."""
+        return self._emergencypower_available
+    
     @property
     def create_battery_devices(self) -> bool:
         """Flag indicating if battery devices should be created."""
