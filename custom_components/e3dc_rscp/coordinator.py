@@ -375,6 +375,9 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         _LOGGER.debug("Getting SG Ready status information")
         await self._load_and_process_sgready_state()
 
+        _LOGGER.debug("Getting Emergency Power status information")
+        await self._load_and_process_emergencypower_state()
+
         if self._update_guard_wallboxsettings is False:
             _LOGGER.debug("Polling additional powermeters")
             await self._load_and_process_powermeters_data()
@@ -524,6 +527,22 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._mydata["sgready-numeric-state"] = request_data["sgready-numeric-state"]
         self._mydata["sgready-active"] = bool(request_data["sgready-active"])
         self._sgready_available = bool(request_data["sgready-active"])
+
+    async def _load_and_process_emergencypower_state(self) -> None:
+        """Loand and process Emergency Power state."""
+        try:
+            request_data: dict[str, Any] = await self.hass.async_add_executor_job(
+                self.proxy.get_emergencypower_state
+            )
+        except HomeAssistantError as ex:
+            _LOGGER.warning("Failed to load Emergency Power state, not updating data: %s", ex)
+            return
+
+        self._mydata["emergencypower-state"] = request_data["emergencypower-state"]
+        self._mydata["emergencypower-numeric-state"] = request_data["emergencypower-numeric-state"]
+        self._mydata["emergencypower-active"] = bool(request_data["emergencypower-active"])
+        self._emergencypower_available = bool(request_data["emergencypower-active"])
+
 
     async def _load_and_process_wallbox_data(self) -> None:
         """Load and process wallbox data to existing data."""
