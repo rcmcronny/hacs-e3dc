@@ -69,6 +69,7 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.config_entry: ConfigEntry = config_entry
         self._wallboxes: list[E3DCWallbox] = []
         self._sgready_available: bool = False
+        self._emergencypower_available: bool = False        
         self._timezone_offset: int = 0
         self._next_stat_update: float = 0
         self._isFarmController: bool = config_entry.data.get("farmcontroller", False)
