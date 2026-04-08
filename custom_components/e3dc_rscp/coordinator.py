@@ -217,6 +217,26 @@ class E3DCCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         else:
             _LOGGER.debug("SG Ready support not active")
 
+    async def async_identify_emergencypower(self) -> None:
+        """Identify availability of Emergency Power support."""
+        try:
+            request_data: dict[str, Any] = await self.hass.async_add_executor_job(
+                self.proxy.get_emergencypower_state
+            )
+        except HomeAssistantError as ex:
+            _LOGGER.warning(
+                "Failed to identify Emergency Power capability, assuming disabled: %s", ex
+            )
+            self._emergencypower_available = False
+            return
+
+        self._emergencypower_available = bool(request_data.get("emergencypower-active"))
+        if self._emergencypower_available:
+            _LOGGER.debug("Emergency Power support detected")
+        else:
+            _LOGGER.debug("Emergency Power support not active")
+
+    
     # Getter for _wallboxes
     @property
     def wallboxes(self) -> list[E3DCWallbox]:
